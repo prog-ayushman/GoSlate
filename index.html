@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3097/3097018.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GoSlate-Start your day with GoSlate</title>
+</head>
+
+<body>
+  <div class="overlay" id="overlay">
+    <div class="message-box">
+      <h2>Welcome back champ!</h2>
+      <p>Every day’s a clean slate.</p>
+      <p>Let’s get started.</p>
+      <div class="loader"></div>
+    </div>
+  </div>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+  <script>
+    setTimeout(() => {
+      const overlay = document.querySelector('.overlay');
+      overlay.classList.add('hidden');
+    }, 5000);
+  </script>
+
+</body>
+
+</html>
