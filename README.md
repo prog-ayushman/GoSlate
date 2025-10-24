@@ -2,7 +2,9 @@
 
 **Reset. Replan. Rerise.**
 
-A modern, elegant daily planning application built with React and Tailwind CSS. GoSlate helps you organize your tasks and meal planning with a beautiful, premium interface.
+A modern, elegant daily planning application built with React and Tailwind CSS. GoSlate helps you organize your tasks, meal planning, and class schedules with attendance tracking—all in a beautiful, premium interface.
+
+![GoSlate Logo](https://img.shields.io/badge/GoSlate-Premium%20Planner-blue?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAKICAK)
 
 ## ✨ Features
 
@@ -15,18 +17,33 @@ A modern, elegant daily planning application built with React and Tailwind CSS. 
 
 ### 🍽️ Meal Planning
 - **Weekly Menu System** - Pre-planned meals for every day of the week
-- **Special Sunday Menus** - Alternating special menus for Sundays
+- **Special Sunday Menus** - Alternating special menus for Sundays (1st/3rd vs 2nd/4th)
 - **Four Meal Categories** - Breakfast, Lunch, Snacks, and Dinner
 - **Visual Meal Cards** - Color-coded meal display with emojis
-- **Date-Specific Menus** - Different meals based on the selected date
+- **Date-Specific Menus** - Different meals based on the selected date's day of week
+
+### 📚 Class Schedule & Attendance Tracking
+- **Recurring Weekly Classes** - Add classes once for a day (e.g., Friday) and they appear on all future Fridays
+- **Daily Attendance Marking** - Mark attendance as Present ✅, Absent ❌, or Off Day 🏖️
+- **Attendance Statistics** - View overall attendance percentage for each subject
+- **Color-Coded Progress** - Visual indicators (green ≥75%, yellow 60-74%, red <60%)
+- **Sunday Off Day** - No classes can be added on Sundays
+- **Smart Calculations** - Attendance percentage excludes "Off Day" from calculation
+- **Class Management** - Edit or delete classes from your schedule
 
 ### 🎨 Premium Design
 - **Modern UI/UX** - Clean, elegant interface with Tailwind CSS
-- **Responsive Design** - Works perfectly on all device sizes
+- **Responsive Design** - Works perfectly on all device sizes (mobile, tablet, desktop)
 - **Gradient Backgrounds** - Beautiful color transitions throughout
-- **Smooth Animations** - Hover effects and transitions
+- **Smooth Animations** - Hover effects and transitions for better interaction
 - **Glass Morphism** - Modern frosted glass effects
 - **Professional Typography** - Carefully chosen fonts and spacing
+
+### 📱 Progressive Web App (PWA)
+- **Installable** - Install on home screen like a native app
+- **Offline Support** - Works without internet connection
+- **Fast Loading** - Cached assets for instant access
+- **Cross-Platform** - Works on iOS, Android, Windows, and Mac
 
 ## 🚀 Getting Started
 
@@ -82,13 +99,27 @@ A modern, elegant daily planning application built with React and Tailwind CSS. 
 3. **View Menu** - See breakfast, lunch, snacks, and dinner for that day
 4. **Special Sundays** - Notice the "Sunday Special" badge for alternating Sunday menus
 
+### Class Schedule & Attendance
+1. **Switch to Classes Tab** - Click the "📚 Classes" tab
+2. **Add Classes** - Enter your class name and click "Add Class"
+   - Classes appear on ALL instances of that day (e.g., add on Friday = every Friday)
+   - Sunday is always a day off (no classes can be added)
+3. **Mark Attendance** - For each class, select Present ✅, Absent ❌, or Off Day 🏖️
+4. **View Statistics** - Scroll down to see overall attendance for each subject
+   - **Attendance % = Present / (Present + Absent) × 100**
+   - Off Days are excluded from the calculation
+   - Green (≥75%): Good attendance
+   - Yellow (50-74%): Warning
+   - Red (<50%): Critical
+5. **Delete Classes** - Click the trash icon to remove a class from all dates
+
 ## 🛠️ Built With
 
-- **[React](https://reactjs.org/)** - Frontend framework
-- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
-- **[React Icons](https://react-icons.github.io/react-icons/)** - Beautiful icons
-- **[UUID](https://www.npmjs.com/package/uuid)** - Unique ID generation
-- **[Vite](https://vitejs.dev/)** - Build tool and dev server
+- **[React](https://reactjs.org/)** - Frontend framework for UI components
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework for styling
+- **[React Icons](https://react-icons.github.io/react-icons/)** - Beautiful icon library
+- **[UUID](https://www.npmjs.com/package/uuid)** - Unique ID generation for tasks
+- **[Vite](https://vitejs.dev/)** - Modern build tool and dev server
 
 ## 📂 Project Structure
 
@@ -96,69 +127,98 @@ A modern, elegant daily planning application built with React and Tailwind CSS. 
 goslate/
 ├── src/
 │   ├── components/
-│   │   ├── Navbar.jsx      # Navigation header with logo
-│   │   └── Footer.jsx      # Footer with branding
-│   ├── App.jsx            # Main application component
-│   ├── index.css          # Global styles and Tailwind imports
-│   └── main.jsx           # React app entry point
+│   │   ├── Navbar.jsx          # Navigation header with G logo
+│   │   └── Footer.jsx          # Footer with branding
+│   ├── App.jsx                 # Main application component
+│   ├── index.css               # Global styles and Tailwind imports
+│   └── main.jsx                # React app entry point
 ├── public/
-│   └── index.html         # HTML template
-├── package.json           # Dependencies and scripts
-├── tailwind.config.js     # Tailwind CSS configuration
-└── README.md             # This file
+├── index.html                  # HTML template
+├── manifest.json               # PWA manifest 
+├── icon-192.png                # PWA icon 192x192 
+├── icon-512.png                # PWA icon 512x512 
+├── package.json                # Dependencies and scripts
+├── vite.config.js              # Vite configuration
+└── README.md                   # This file
 ```
 
 ## 🎨 Design System
 
 ### Color Palette
-- **Primary**: Blue gradient (`from-blue-600 to-blue-700`)
-- **Secondary**: Teal accent (`from-green-600 to-teal-600`)
+- **Primary Blue**: Blue gradient (`from-blue-600 to-blue-700`)
+- **Secondary Teal**: Teal accent (`from-green-600 to-teal-600`)
+- **Purple**: For classes tab (`from-purple-600 to-purple-700`)
 - **Background**: Soft gradients (`from-slate-50 to-blue-50`)
-- **Cards**: White with subtle colored accents
+- **Cards**: White with subtle colored accents and borders
 
 ### Typography
-- **Headers**: Bold, gradient text effects
-- **Body**: Clean, readable fonts
-- **Interactive**: Hover effects and smooth transitions
+- **Headers**: Bold, gradient text effects (24-48px)
+- **Body**: Clean, readable fonts (14-18px)
+- **Interactive**: Hover effects and smooth transitions (300ms)
 
-## 📅 Meal Planning System
+### Components
+- **Tabs**: 3 main tabs - Tasks, Meals, Classes
+- **Cards**: Rounded corners (16-24px), shadows, and borders
+- **Buttons**: Gradient backgrounds, hover scale effects
+- **Inputs**: Rounded borders, focus states with rings
+- **Progress Bars**: Color-coded attendance visualization
 
-### Weekly Schedule
-- **Monday**: Traditional Indian breakfast, varied lunch/dinner
-- **Tuesday**: North Indian specialties
-- **Wednesday**: South Indian focus with biriyani dinner
-- **Thursday**: Mixed regional cuisines
-- **Friday**: Comfort foods and street food snacks
-- **Saturday**: Continental breakfast, Indian mains
-
-### Sunday Specials
-- **Odd Sundays** (1st, 3rd): Dosa breakfast, Biryani lunch
-- **Even Sundays** (2nd, 4th): Dosa breakfast, Pulao dinner
-- **5th Sunday**: Follows odd pattern
 
 ## 💾 Data Storage
 
-All task data is stored locally in your browser using `localStorage`. This means:
-- ✅ Your data persists between sessions
-- ✅ No server required - works offline
-- ✅ Privacy-focused - data stays on your device
-- ⚠️ Data is browser-specific
-- ⚠️ Clearing browser data will remove tasks
+All data is stored locally in your browser using `localStorage`. This means:
+
+✅ Your data persists between sessions  
+✅ No server required - works completely offline  
+✅ Privacy-focused - data stays on your device  
+✅ Fast access - instant loading from local storage  
+
+⚠️ Data is browser-specific (won't sync across browsers)  
+⚠️ Clearing browser data will remove all tasks/attendance  
 
 ## 🔧 Customization
 
 ### Adding New Meals
-Edit the `weeklyMeals` and `sundayMeals` objects in `App.jsx` to customize the meal planning system.
+Edit the `weeklyMeals` and `sundayMeals` objects in `App.jsx`:
+
+```javascript
+const weeklyMeals = {
+  1: {
+    breakfast: 'Your meal',
+    lunch: 'Your meal',
+    snacks: 'Your meal',
+    dinner: 'Your meal'
+  }
+  // ... more days
+}
+```
 
 ### Styling Changes
-Modify Tailwind classes in the components to change colors, spacing, and effects.
+Modify Tailwind classes in the components to change:
+- Colors (use Tailwind color palette)
+- Spacing (padding, margins)
+- Borders and shadows
+- Animations and transitions
 
 ### New Features
-The modular component structure makes it easy to add new features like:
-- Categories for tasks
-- Priority levels
-- Meal customization
-- Export functionality
+The modular component structure makes it easy to add:
+- Task categories and tags
+- Task priority levels
+- Recurring tasks
+- Meal customization per user
+- Export functionality (PDF/CSV)
+- Multi-user support
+- Push notifications
+
+## 📱 Making It a PWA (Progressive Web App)
+
+To make GoSlate installable on devices:
+
+1. **Create `manifest.json`** 
+2. **Add icons** (192x192 and 512x512 PNG)
+3. **Register service worker** in `main.jsx`
+4. **Add install button** 
+
 
 ## 🤝 Contributing
 
@@ -182,12 +242,39 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Inspired by the need for better daily planning tools
+- Inspired by the personal need for better daily planning tools
 - Thanks to the React and Tailwind CSS communities
 - Special appreciation for clean, minimal design principles
+- Influenced by productivity and academic planning concepts
+
+---
+
+## Advanced Features Overview
+
+### Smart Date Management
+- Automatic day-of-week detection
+- Recurring class scheduling without duplication
+- Historical attendance tracking
+
+### Attendance Intelligence
+- Percentage calculations excluding off days
+- Color-coded performance indicators
+- Individual and aggregate statistics
+
+### Offline-First Architecture
+- All data stored locally
+- No external API calls required
+- Works perfectly without internet
+
+### Responsive Mobile UI
+- Touch-friendly buttons and inputs
+- Optimized for small screens
+- Scales beautifully on tablets and desktops
 
 ---
 
 **Start your day right with GoSlate! ✨**
 
-*Every moment is a fresh beginning. Reset. Replan. Rerise.*
+*Every moment is a fresh beginning. Reset. Replan. Rerise. 🎯*
+
+For questions or support, please open an issue on GitHub or reach out to the developer.

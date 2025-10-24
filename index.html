@@ -2,29 +2,34 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/goslate-logo.svg">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GoSlate-Start your day with GoSlate</title>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/goslate-logo.svg">
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    
+    <link rel="icon" href="/goslate-logo.svg" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GoSlate-Start your day with GoSlate</title>
 </head>
 
 <body>
-  <div class="overlay" id="overlay">
-    <div class="message-box">
-      <h2>Welcome back champ!</h2>
-      <p>Every day’s a clean slate.</p>
-      <p>Let’s get started.</p>
-      <div class="loader"></div>
+    <div class="overlay" id="overlay">
+        <div class="message-box">
+            <h2>Welcome back champ!</h2>
+            <p>Every day’s a clean slate.</p>
+            <p>Let’s get started.</p>
+            <div class="loader"></div>
+        </div>
     </div>
-  </div>
-  <div id="root"></div>
-  <script type="module" src="/src/main.jsx"></script>
-  <script>
-    setTimeout(() => {
-      const overlay = document.querySelector('.overlay');
-      overlay.classList.add('hidden');
-    }, 5000);
-  </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+        setTimeout(() => {
+            const overlay = document.querySelector('.overlay');
+            overlay.classList.add('hidden');
+        }, 5000);
+    </script>
 
 </body>
 

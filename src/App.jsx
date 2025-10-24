@@ -10,7 +10,10 @@ function App() {
   const [todos, setTodos] = useState([])
   const [showFinished, setshowFinished] = useState(true)
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
-  const [activeTab, setActiveTab] = useState('tasks') // 'tasks' or 'meals'
+  const [activeTab, setActiveTab] = useState('tasks')
+  const [timetable, setTimetable] = useState({})
+  const [attendance, setAttendance] = useState({})
+  const [newClass, setNewClass] = useState("")
 
   useEffect(() => {
     let todoString = localStorage.getItem("todos")
@@ -18,10 +21,28 @@ function App() {
       let todos = JSON.parse(todoString)
       setTodos(todos)
     }
+
+    let timetableString = localStorage.getItem("timetable")
+    if (timetableString) {
+      setTimetable(JSON.parse(timetableString))
+    }
+
+    let attendanceString = localStorage.getItem("attendance")
+    if (attendanceString) {
+      setAttendance(JSON.parse(attendanceString))
+    }
   }, [])
 
   const saveToLS = (updatedTodos) => {
     localStorage.setItem("todos", JSON.stringify(updatedTodos || todos))
+  }
+
+  const saveTimetableToLS = (data) => {
+    localStorage.setItem("timetable", JSON.stringify(data))
+  }
+
+  const saveAttendanceToLS = (data) => {
+    localStorage.setItem("attendance", JSON.stringify(data))
   }
 
   const toggleFinished = () => {
@@ -61,6 +82,94 @@ function App() {
     setTodos(newTodos)
     saveToLS(newTodos)
   }
+
+  const getDayOfWeek = (dateString) => {
+    return new Date(dateString).getDay();
+  };
+
+  const isSunday = (dateString) => {
+    return getDayOfWeek(dateString) === 0;
+  };
+
+  const handleAddClass = () => {
+    const name = newClass.trim();
+    if (!name) return;
+
+    const dayOfWeek = getDayOfWeek(selectedDate);
+    if (dayOfWeek === 0) return;
+
+    const updated = { ...timetable };
+    updated[dayOfWeek] = updated[dayOfWeek] || [];
+    if (!updated[dayOfWeek].includes(name)) {
+      updated[dayOfWeek].push(name);
+      setTimetable(updated);
+      saveTimetableToLS(updated);
+    }
+    setNewClass("");
+  };
+
+  const handleDeleteClass = (className) => {
+    const dayOfWeek = getDayOfWeek(selectedDate);
+    const updated = { ...timetable };
+    if (updated[dayOfWeek]) {
+      updated[dayOfWeek] = updated[dayOfWeek].filter(c => c !== className);
+      setTimetable(updated);
+      saveTimetableToLS(updated);
+    }
+  };
+
+  const handleAttendance = (date, className, status) => {
+    const updated = { ...attendance };
+    updated[date] = updated[date] || {};
+    updated[date][className] = status;
+    setAttendance(updated);
+    saveAttendanceToLS(updated);
+  };
+
+  const getClassesForDate = (dateString) => {
+    const dayOfWeek = getDayOfWeek(dateString);
+    if (dayOfWeek === 0) return [];
+    return timetable[dayOfWeek] || [];
+  };
+
+  const calculateAttendanceStats = () => {
+    const stats = {};
+
+    Object.keys(timetable).forEach(day => {
+      timetable[day].forEach(className => {
+        if (!stats[className]) {
+          stats[className] = {
+            present: 0,
+            absent: 0,
+            offDay: 0,
+            total: 0,
+            percentage: 0
+          };
+        }
+      });
+    });
+
+    Object.keys(attendance).forEach(date => {
+      Object.keys(attendance[date]).forEach(className => {
+        const status = attendance[date][className];
+        if (stats[className]) {
+          stats[className].total++;
+          if (status === "Present") stats[className].present++;
+          else if (status === "Absent") stats[className].absent++;
+          else if (status === "Off Day") stats[className].offDay++;
+        }
+      });
+    });
+
+    Object.keys(stats).forEach(className => {
+      const totalRelevant = stats[className].present + stats[className].absent;
+      if (totalRelevant > 0) {
+        stats[className].percentage = ((stats[className].present / totalRelevant) * 100).toFixed(1);
+      }
+    });
+
+    return stats;
+  };
 
   const weeklyMeals = {
     1: {
@@ -120,30 +229,25 @@ function App() {
     const date = new Date(dateString);
     const day = date.getDay();
 
-    if (day !== 0) return null; // Not a Sunday
+    if (day !== 0) return null;
 
     const dateNum = date.getDate();
     const weekOfMonth = Math.ceil(dateNum / 7);
 
-    // 1st and 3rd Sunday - Same menu
     if (weekOfMonth === 1 || weekOfMonth === 3) return 'odd';
-    // 2nd and 4th Sunday - Same menu
     if (weekOfMonth === 2 || weekOfMonth === 4) return 'even';
 
-    // 5th Sunday - use odd pattern
     return 'odd';
   }
 
   const getMealForDate = (dateString) => {
     const date = new Date(dateString);
-    const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const dayOfWeek = date.getDay();
 
     if (dayOfWeek === 0) {
-      // Sunday - use alternating pattern
       const sundayType = getSundayType(dateString);
       return sundayMeals[sundayType];
     } else {
-      // Monday to Saturday - use fixed weekly pattern
       return weeklyMeals[dayOfWeek];
     }
   }
@@ -151,6 +255,8 @@ function App() {
   const filteredTodos = todos.filter(item => item.date === selectedDate)
   const currentMeal = getMealForDate(selectedDate)
   const sundayType = getSundayType(selectedDate)
+  const currentClasses = getClassesForDate(selectedDate)
+  const attendanceStats = calculateAttendanceStats()
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -170,14 +276,14 @@ function App() {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50">
         <div className="container mx-auto px-6 py-12">
           <div className="max-w-6xl mx-auto bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
-            
+
             {/* Header Section */}
             <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-teal-600 px-8 py-12 text-center">
               <h1 className='font-bold text-4xl md:text-5xl text-white mb-4 drop-shadow-lg'>
                 GoSlate - Your Daily Planner
               </h1>
               <p className="text-blue-100 text-lg font-medium">
-                Organize your tasks and meals with elegance ✨
+                Organize your tasks, meals, and lectures with elegance ✨
               </p>
             </div>
 
@@ -196,7 +302,7 @@ function App() {
                       className="border-2 border-blue-200 rounded-xl px-4 py-3 font-semibold text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300"
                     />
                   </div>
-                  
+
                   <div className="flex-1 min-w-fit">
                     <span className="text-gray-700 font-bold text-lg">{formatDate(selectedDate)}</span>
                     {sundayType && (
@@ -214,23 +320,30 @@ function App() {
               <div className="flex gap-4 mb-8">
                 <button
                   onClick={() => setActiveTab('tasks')}
-                  className={`flex-1 py-4 px-6 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 ${
-                    activeTab === 'tasks'
-                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-2xl shadow-blue-300/50'
-                      : 'bg-white text-blue-700 hover:bg-blue-50 shadow-lg border-2 border-blue-200'
-                  }`}
+                  className={`flex-1 py-4 px-6 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 ${activeTab === 'tasks'
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-2xl shadow-blue-300/50'
+                    : 'bg-white text-blue-700 hover:bg-blue-50 shadow-lg border-2 border-blue-200'
+                    }`}
                 >
                   📝 Tasks & Goals
                 </button>
                 <button
                   onClick={() => setActiveTab('meals')}
-                  className={`flex-1 py-4 px-6 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 ${
-                    activeTab === 'meals'
-                      ? 'bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-2xl shadow-green-300/50'
-                      : 'bg-white text-green-700 hover:bg-green-50 shadow-lg border-2 border-green-200'
-                  }`}
+                  className={`flex-1 py-4 px-6 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 ${activeTab === 'meals'
+                    ? 'bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-2xl shadow-green-300/50'
+                    : 'bg-white text-green-700 hover:bg-green-50 shadow-lg border-2 border-green-200'
+                    }`}
                 >
                   🍽️ Meal Planning
+                </button>
+                <button
+                  onClick={() => setActiveTab('classes')}
+                  className={`flex-1 py-4 px-6 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 ${activeTab === 'classes'
+                    ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-2xl shadow-purple-300/50'
+                    : 'bg-white text-purple-700 hover:bg-purple-50 shadow-lg border-2 border-purple-200'
+                    }`}
+                >
+                  📚 Lectures
                 </button>
               </div>
 
@@ -279,7 +392,7 @@ function App() {
                   <h2 className='text-3xl font-bold text-transparent bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text mb-6'>
                     Your Tasks for Today
                   </h2>
-                  
+
                   <div className="todos space-y-4">
                     {filteredTodos.length === 0 && (
                       <div className='text-center text-gray-500 py-16 bg-gradient-to-br from-blue-50 to-white rounded-2xl border-2 border-dashed border-blue-200'>
@@ -292,11 +405,10 @@ function App() {
                       return (showFinished || !item.isCompleted) && (
                         <div
                           key={item.id}
-                          className={`todo flex items-center justify-between p-6 rounded-2xl shadow-lg border-2 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl ${
-                            item.isCompleted 
-                              ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200' 
-                              : 'bg-gradient-to-r from-white to-blue-50 border-blue-200 hover:border-blue-300'
-                          }`}
+                          className={`todo flex items-center justify-between p-6 rounded-2xl shadow-lg border-2 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl ${item.isCompleted
+                            ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200'
+                            : 'bg-gradient-to-r from-white to-blue-50 border-blue-200 hover:border-blue-300'
+                            }`}
                         >
                           <div className='flex items-center gap-4 flex-1'>
                             <input
@@ -306,11 +418,10 @@ function App() {
                               checked={item.isCompleted}
                               className="w-6 h-6 cursor-pointer rounded focus:ring-2 focus:ring-blue-500"
                             />
-                            <div className={`flex-1 text-lg ${
-                              item.isCompleted 
-                                ? "line-through text-gray-500 font-medium" 
-                                : "text-gray-800 font-semibold"
-                            }`}>
+                            <div className={`flex-1 text-lg ${item.isCompleted
+                              ? "line-through text-gray-500 font-medium"
+                              : "text-gray-800 font-semibold"
+                              }`}>
                               {item.todo}
                             </div>
                             {item.isCompleted && (
@@ -389,12 +500,161 @@ function App() {
                   </div>
                 </div>
               )}
+
+              {/* Lectures Tab */}
+              {activeTab === 'classes' && (
+                <div className="space-y-8">
+                  <div className="bg-gradient-to-br from-white to-purple-50 rounded-2xl p-8 shadow-xl border border-purple-100">
+                    <h2 className='text-3xl font-bold text-transparent bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text mb-6'>
+                      {getDayName(selectedDate)}'s Lecture
+                    </h2>
+
+                    {!isSunday(selectedDate) ? (
+                      <>
+                        <div className="mb-8">
+                          <div className="flex flex-col sm:flex-row gap-4">
+                            <input
+                              type="text"
+                              placeholder="Enter lecture name"
+                              value={newClass}
+                              onChange={(e) => setNewClass(e.target.value)}
+                              onKeyPress={(e) => e.key === 'Enter' && handleAddClass()}
+                              className='flex-1 border-2 border-purple-200 rounded-2xl px-6 py-4 text-lg focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-300 bg-white/80 backdrop-blur-sm'
+                            />
+                            <button
+                              disabled={!newClass.trim()}
+                              onClick={handleAddClass}
+                              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 disabled:from-gray-300 disabled:to-gray-400 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 disabled:transform-none disabled:cursor-not-allowed whitespace-nowrap"
+                            >
+                              ➕ Add a new lecture
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className='h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent mb-8'></div>
+
+                        {/* List classes and attendance */}
+                        <div className="space-y-4">
+                          {currentClasses.length > 0
+                            ? currentClasses.map((className, idx) => {
+                              const attendanceStatus = attendance[selectedDate]?.[className] || "";
+                              const statusColors = {
+                                "Present": "bg-green-100 border-green-300",
+                                "Absent": "bg-red-100 border-red-300",
+                                "Off Day": "bg-gray-100 border-gray-300",
+                                "": "bg-purple-50 border-purple-200"
+                              };
+
+                              return (
+                                <div
+                                  key={idx}
+                                  className={`flex items-center gap-4 p-6 rounded-2xl shadow-lg border-2 transition-all duration-300 ${statusColors[attendanceStatus]}`}
+                                >
+                                  <span className="flex-1 text-lg font-bold text-purple-800">{className}</span>
+
+                                  <select
+                                    value={attendanceStatus}
+                                    onChange={e => handleAttendance(selectedDate, className, e.target.value)}
+                                    className="border-2 border-purple-300 rounded-xl px-4 py-2 font-semibold text-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
+                                  >
+                                    <option value="">Mark Attendance</option>
+                                    <option value="Present">✅ Present</option>
+                                    <option value="Absent">❌ Absent</option>
+                                    <option value="Off Day">🏖️ Off Day</option>
+                                  </select>
+
+                                  <button
+                                    onClick={() => handleDeleteClass(className)}
+                                    className='bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 p-3 text-white rounded-xl transition-all duration-300 transform hover:scale-110 shadow-lg'
+                                    title="Delete this class from all future dates"
+                                  >
+                                    <AiFillDelete className="text-lg" />
+                                  </button>
+                                </div>
+                              );
+                            })
+                            : (
+                              <div className='text-center text-gray-500 py-16 bg-gradient-to-br from-purple-50 to-white rounded-2xl border-2 border-dashed border-purple-200'>
+                                <div className="text-6xl mb-4">📚</div>
+                                <p className="text-xl font-semibold">No lectures scheduled for {getDayName(selectedDate)}s</p>
+                                <p className="text-gray-400 mt-2">Add your first lecture above!</p>
+                              </div>
+                            )
+                          }
+                        </div>
+                      </>
+                    ) : (
+                      <div className='text-center py-16 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border-2 border-purple-200'>
+                        <div className="text-6xl mb-4">🦋</div>
+                        <p className="text-2xl font-bold text-purple-700 mb-2">It's Sunday!</p>
+                        <p className="text-lg text-gray-600">No classes today. Enjoy your day off!</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Attendance Summary Section */}
+                  {Object.keys(attendanceStats).length > 0 && (
+                    <div className="bg-gradient-to-br from-white to-orange-50 rounded-2xl p-8 shadow-xl border border-orange-100">
+                      <h2 className='text-3xl font-bold text-transparent bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text mb-6'>
+                        📊 Attendance Summary
+                      </h2>
+
+                      <div className="space-y-6">
+                        {Object.entries(attendanceStats).map(([className, stats]) => (
+                          <div key={className} className="bg-white rounded-2xl p-6 shadow-lg border-2 border-orange-200">
+                            <div className="flex justify-between items-center mb-4">
+                              <h3 className="text-2xl font-bold text-gray-800">{className}</h3>
+                              <div className={`text-3xl font-black ${parseFloat(stats.percentage) >= 75 ? 'text-green-600' :
+                                parseFloat(stats.percentage) >= 50 ? 'text-yellow-600' :
+                                  'text-red-600'
+                                }`}>
+                                {stats.percentage}%
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                              <div className="bg-green-50 rounded-xl p-4 text-center border-2 border-green-200">
+                                <div className="text-3xl font-bold text-green-600">{stats.present}</div>
+                                <div className="text-sm text-gray-600 font-semibold">Present</div>
+                              </div>
+                              <div className="bg-red-50 rounded-xl p-4 text-center border-2 border-red-200">
+                                <div className="text-3xl font-bold text-red-600">{stats.absent}</div>
+                                <div className="text-sm text-gray-600 font-semibold">Absent</div>
+                              </div>
+                              <div className="bg-gray-50 rounded-xl p-4 text-center border-2 border-gray-200">
+                                <div className="text-3xl font-bold text-gray-600">{stats.offDay}</div>
+                                <div className="text-sm text-gray-600 font-semibold">Off Day</div>
+                              </div>
+                              <div className="bg-blue-50 rounded-xl p-4 text-center border-2 border-blue-200">
+                                <div className="text-3xl font-bold text-blue-600">{stats.total}</div>
+                                <div className="text-sm text-gray-600 font-semibold">Total</div>
+                              </div>
+                            </div>
+
+                            {/* Progress Bar */}
+                            <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+                              <div
+                                className={`h-full rounded-full transition-all duration-500 ${parseFloat(stats.percentage) >= 75 ? 'bg-gradient-to-r from-green-500 to-green-600' :
+                                  parseFloat(stats.percentage) >= 60 ? 'bg-gradient-to-r from-yellow-500 to-yellow-600' :
+                                    'bg-gradient-to-r from-red-500 to-red-600'
+                                  }`}
+                                style={{ width: `${stats.percentage}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
+        <Footer />
       </div>
 
-      <Footer />
+
     </>
   )
 }
