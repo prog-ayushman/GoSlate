@@ -10,27 +10,12 @@
     <link rel="icon" href="/goslate-logo.svg" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GoSlate-Start your day with GoSlate</title>
+    <title>GoSlate-Plan your day with GoSlate</title>
 </head>
 
 <body>
-    <div class="overlay" id="overlay">
-        <div class="message-box">
-            <h2>Welcome back champ!</h2>
-            <p>Every day’s a clean slate.</p>
-            <p>Let’s get started.</p>
-            <div class="loader"></div>
-        </div>
-    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <script>
-        setTimeout(() => {
-            const overlay = document.querySelector('.overlay');
-            overlay.classList.add('hidden');
-        }, 5000);
-    </script>
-
 </body>
 
 </html>
