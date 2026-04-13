@@ -132,7 +132,6 @@ goslate/
 │   ├── App.jsx                 # Main application component
 │   ├── index.css               # Global styles and Tailwind imports
 │   └── main.jsx                # React app entry point
-├── public/
 ├── index.html                  # HTML template
 ├── manifest.json               # PWA manifest 
 ├── icon-192.png                # PWA icon 192x192 
