@@ -833,39 +833,39 @@ function App() {
 
   const weeklyMeals = {
     1: {
-      breakfast: 'Idli, Ghuguni, Coconut and Groundnut chutney, Tea',
-      lunch: 'Rice, Roti, Dal, Sagamuga, Aloo Baigan Bharta, Dahi Salad',
-      snacks: 'Mix-veg Chowmein, Coffee',
+      breakfast: 'Chole, Bhature, Coffee',
+      lunch: 'Rice, Roti, Pakhala, Dalma, Badichura, Aloo Karela Chips, Dahi Salad',
+      snacks: 'Dahi-Vada Aludum, Tea',
       dinner: 'Rice, Roti, Dal, Soyabean-Aloo Kasa, Cabbage-Matar, Fruit Custard'
     },
     2: {
-      breakfast: 'Chole, Bhature, Coffee',
-      lunch: 'Rice, Roti, Dal, Navaratna Kurma, Dahi Kadhi, Papad',
-      snacks: 'Dahi-Vada Aludum',
+      breakfast: 'Idli, Bada, Ghuguni, Coconut and Groundnut chutney, Tea',
+      lunch: 'Rice, Roti, Pakhala, Dal, Navaratna Kurma, Dahi Kadhi, Papad',
+      snacks: 'Pampdi Chat, Coffee',
       dinner: 'Rice, Roti, Dal, Paneer Bhurji, Aloo-Beans Bhaja, Sweet Curd'
     },
     3: {
       breakfast: 'Masala Upama, Ghuguni, Coconut and Groundnut chutney, Tea',
-      lunch: 'Rice, Roti, Dal, Mushroom and Green-Peas Masala, Aloo-Cauliflower Bhaja, Salad',
-      snacks: 'Paneer Patties, Coffee',
+      lunch: 'Rice, Roti, Pakhala, Dal, Mushroom and Green-Peas Masala, Aloo-Cauliflower Bhaja, Salad',
+      snacks: 'Creambun, Milkshake',
       dinner: 'Mix-Veg Dum Biriyani, Paneer Curry, Raita, Rasagola'
     },
     4: {
-      breakfast: 'Vada, Aloo-dum, Coconut and Groundnut chutney, Tea',
-      lunch: 'Rice, Roti, Dal, Potal-Kurma, Cabbage-Matar Bhaja, Papad',
-      snacks: 'Pav-Bhaji, Tea',
+      breakfast: 'Idli, Bada, Ghuguni, Coconut and Groundnut chutney, Coffee',
+      lunch: 'Rice, Roti, Pakhala, Dal, Potal-Kurma, Cabbage-Matar Bhaja, Papad',
+      snacks: 'Vada Pav, Tea',
       dinner: 'Rice, Roti, Dal, Paneer Tadka, Finger chips, Salad, Kalajamun'
     },
     5: {
-      breakfast: 'Bread, Jam, Banana, Tea',
-      lunch: 'Rice, Roti, Dal, Cauliflower-Aloo Kasa, Tomato Chutney, Papad',
-      snacks: 'Pampdi Chat, Coffee',
+      breakfast: 'Bread, Jam, Banana, Coffee',
+      lunch: 'Rice, Roti, Pakhala, Dal, Cauliflower-Aloo Kasa, Tomato Chutney, Papad',
+      snacks: 'Aloochop, Tea',
       dinner: 'Rice, Roti, Dal, Paneer-Butter Masala, Seasonal Bhaja, Malpua'
     },
     6: {
-      breakfast: 'Uttapam, Sambar, Coconut and Groundnut chutney, Coffee',
-      lunch: 'Rice, Roti, Dal, Chena Curry, Cabbage-Beans-Green Peas Bhaja, Salad',
-      snacks: 'Vada Pav, Tea',
+      breakfast: 'Poha, Ghuguni, Sew and Onion, Banana, Coffee',
+      lunch: 'Rice, Roti, Pakhala, Dal, Chena Curry, Cabbage-Beans-Green Peas Bhaja, Salad',
+      snacks: 'Aloo Samosa, Tea',
       dinner: 'Rice, Roti, Dal, Mushroom Besar, Chilli Soya, Papad'
     }
   };
@@ -873,15 +873,15 @@ function App() {
   const sundayMeals = {
     odd: {
       breakfast: 'Onion Masala Dosa, Coconut and Groundnut chutney, Tea',
-      lunch: 'Veg Dum Biryani, Paneer Curry, Raita, Papad',
-      snacks: 'Corn Salad, Tea',
-      dinner: 'Rice, Roti, Dal, Mix-Veg Ghanta with paneer, Dahi-bundi, Ice-Cream'
+      lunch: 'Veg Dum Biryani, Chilli Paneer, Raita, Papad',
+      snacks: 'Oreo Biscuit, Coffee',
+      dinner: 'Rice, Roti, Dal, Kofta Curry, Dry Rajma, Ice-Cream'
     },
     even: {
       breakfast: 'Onion Masala Dosa, Coconut and Groundnut chutney, Tea',
-      lunch: 'Rice, Roti, Dal, Mix-Veg Ghanta with paneer, BitterGourd chips, Salad',
-      snacks: 'Samosa, Pudina Chutney, Coffee',
-      dinner: 'Mushroom Pulao, Dal fry, Puri, Paneer-MatarAloo Curry, Papad, Ice-Cream'
+      lunch: 'Veg Dum Biryani, Chilli Paneer, Raita, Papa',
+      snacks: 'Oreo Biscuit, Coffee',
+      dinner: 'Rice, Dal fry, Puri, Manchurian, Dry Rajma, Salad, Ice-Cream'
     }
   };
 
